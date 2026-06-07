@@ -26,7 +26,7 @@
 ### 패키지 구조
 
 ```
-com.example.payment/
+com.shl.payment/
 ├── auth/
 │   ├── domain/
 │   │   ├── User.kt
