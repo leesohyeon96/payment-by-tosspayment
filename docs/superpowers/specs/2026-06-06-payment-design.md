@@ -100,8 +100,8 @@ createdAt   TIMESTAMP
 ```
 id              UUID        PK
 orderId         UUID        FK → Order
-paymentKey      VARCHAR     UNIQUE (토스 발급) - 멱등성 키
-method          ENUM        CARD | VIRTUAL_ACCOUNT | 등
+paymentKey      VARCHAR     UNIQUE NULLABLE (토스 발급, confirm 시 업데이트) - 멱등성 키
+method          ENUM        CARD | VIRTUAL_ACCOUNT | 등 (NULLABLE, confirm 시 업데이트)
 amount          BIGINT      NOT NULL
 cancelledAmount BIGINT      DEFAULT 0
 status          ENUM        READY | DONE | CANCELLED | FAILED
