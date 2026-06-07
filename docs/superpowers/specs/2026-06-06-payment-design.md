@@ -9,15 +9,15 @@
 
 ## 기술 스택
 
-| 항목 | 결정 |
-|------|------|
-| 언어/프레임워크 | Kotlin + Spring Boot + JPA |
-| 결제 PG | 토스페이먼츠 |
-| 인증 | JWT (Access + Refresh Token) |
-| DB | PostgreSQL (Neon 무료) |
-| 프론트 | Thymeleaf |
-| 배포 | Render 무료 플랜 |
-| 구조 | Modular Monolith + DDD |
+| 항목 | 결정 | 선택 이유 |
+|------|------|-----------|
+| 언어/프레임워크 | Kotlin + Spring Boot + JPA | 실무에서 가장 많이 쓰는 조합. 학습 목적으로 실무 스택 그대로 경험 |
+| 결제 PG | 토스페이먼츠 | 국내 최고 수준의 개발자 문서, 테스트 모드 완비, 국내 카드 전부 지원 |
+| 인증 | JWT (Access + Refresh Token) | 현재 실무 트렌드, 면접 빈출 주제. 세션 기반 대비 stateless로 확장 용이 |
+| DB | PostgreSQL (Neon 무료) | 결제는 트랜잭션/정합성 필수 → RDB. Neon은 무료 + 데이터 영구 보존 (Render 내장 DB는 90일 후 삭제) |
+| 프론트 | Thymeleaf | 토스 SDK가 프론트에서 호출되므로 UI 필요. React 오버킬, Spring 내장으로 별도 배포 불필요 |
+| 배포 | Render 무료 플랜 | 추가 과금 없음 (한도 초과 시 정지, 청구 아님). 신용카드 불필요 |
+| 구조 | Modular Monolith + DDD | 단일 배포로 운영 단순화. 도메인별 bounded context 분리로 나중에 MSA 전환 시 서비스로 그대로 분리 가능 |
 
 ---
 
