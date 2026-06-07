@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head><meta charset="UTF-8"><title>결제 실패</title></head>
+<body>
+<h2>결제 실패</h2>
+<p id="message"></p>
+<a href="/order/create">다시 시도</a>
+<script>
+const params = new URLSearchParams(window.location.search);
+document.getElementById('message').textContent =
+    params.get('message') || '결제 중 오류가 발생했습니다';
+</script>
+</body>
+</html>

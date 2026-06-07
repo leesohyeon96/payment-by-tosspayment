@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head><meta charset="UTF-8"><title>결제 완료</title></head>
+<body>
+<h2>결제 처리 중...</h2>
+<p id="message"></p>
+<a href="/order/create">새 주문</a> |
+<a href="/payment/history">결제 내역</a>
+<script>
+const params = new URLSearchParams(window.location.search);
+const paymentKey = params.get('paymentKey');
+const orderId = params.get('orderId');
+const amount = parseInt(params.get('amount'));
+const token = localStorage.getItem('accessToken');
+
+async function confirmPayment() {
+    const res = await fetch('/payments/confirm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify({ paymentKey, orderId, amount })
+    });
+    const data = await res.json();
+    if (data.success) {
+        document.querySelector('h2').textContent = '결제 완료!';
+        document.getElementById('message').textContent =
+            '결제 금액: ' + data.data.amount.toLocaleString() + '원';
+    } else {
+        document.querySelector('h2').textContent = '결제 실패';
+        document.getElementById('message').textContent = data.error.message;
+    }
+}
+
+confirmPayment();
+</script>
+</body>
+</html>

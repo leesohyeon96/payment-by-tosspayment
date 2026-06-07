@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head><meta charset="UTF-8"><title>주문 생성</title></head>
+<body>
+<h2>주문하기</h2>
+<form id="orderForm">
+    <input type="text" id="orderName" placeholder="상품명" value="테스트 상품" required><br>
+    <input type="number" id="amount" placeholder="금액" value="10000" required><br>
+    <button type="submit">주문 생성 및 결제</button>
+</form>
+<p id="message"></p>
+<script>
+document.getElementById('orderForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem('accessToken');
+    if (!token) { window.location.href = '/auth/login'; return; }
+
+    const res = await fetch('/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify({
+            orderName: document.getElementById('orderName').value,
+            totalAmount: parseInt(document.getElementById('amount').value)
+        })
+    });
+    const data = await res.json();
+    if (data.success) {
+        const order = data.data;
+        window.location.href = '/payment/checkout?orderId=' + order.orderId + '&amount=' + order.totalAmount + '&orderName=' + encodeURIComponent(order.orderName);
+    } else {
+        document.getElementById('message').textContent = data.error.message;
+    }
+});
+</script>
+</body>
+</html>
