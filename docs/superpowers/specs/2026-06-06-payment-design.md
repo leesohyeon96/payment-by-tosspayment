@@ -131,12 +131,20 @@ cancelledAt     TIMESTAMP   NULLABLE
   ├── 성공                     → Payment DONE, Order PAID
   ├── 일시 장애               → 재시도 3회 (exponential backoff)
   │   ├── 성공               → Payment DONE, Order PAID
-  │   └── 전부 실패          → 토스 취소 API 호출, FAILED
-  └── 복구 불가 오류          → 토스 취소 API 호출, FAILED
+  │   └── 전부 실패          → 즉시 토스 취소 API 호출 → FAILED → 사용자에게 실패 응답
+  └── 복구 불가 오류          → 즉시 토스 취소 API 호출 → FAILED
 
-[Webhook 안전망]
-  └── 토스가 /webhook/payment 로 결과 재전송
-      → DB 상태 확인 후 불일치 시 보정
+[Webhook 안전망] - POST /webhook/payment (토스 서버 → 우리 백엔드, 프론트 무관)
+  └── 서버 다운 후 복구 시 토스가 재전송
+      ├── DB READY → DONE 보정 시도
+      │   └── 보정 실패 → 토스 취소 API 호출
+      └── DB 이미 DONE → 무시 (멱등성)
+      * 인증: JWT 아님, 토스 HMAC 서명 검증
+
+[배치 스케줄러] - 5~10분 주기
+  └── READY 상태 + 10분 이상 경과한 Payment 탐색
+      → 전부 토스 취소 API 호출 → FAILED
+      (사용자는 이미 에러 보고 이탈한 상태)
 ```
 
 ---
