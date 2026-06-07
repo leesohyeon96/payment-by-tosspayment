@@ -1,0 +1,40 @@
+package com.shl.payment.common.exception
+
+import com.shl.payment.common.response.ApiResponse
+import com.shl.payment.common.response.ErrorResponse
+import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.MethodArgumentNotValidException
+import org.springframework.web.bind.annotation.ExceptionHandler
+import org.springframework.web.bind.annotation.RestControllerAdvice
+
+@RestControllerAdvice
+class GlobalExceptionHandler {
+
+    private val log = LoggerFactory.getLogger(javaClass)
+
+    @ExceptionHandler(BusinessException::class)
+    fun handleBusinessException(e: BusinessException): ResponseEntity<ApiResponse<Unit>> {
+        log.warn("BusinessException: code=${e.code}, message=${e.message}")
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(ApiResponse.fail(ErrorResponse(e.code, e.message)))
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException::class)
+    fun handleValidation(e: MethodArgumentNotValidException): ResponseEntity<ApiResponse<Unit>> {
+        val message = e.bindingResult.fieldErrors.joinToString { "${it.field}: ${it.defaultMessage}" }
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(ApiResponse.fail(ErrorResponse("VALIDATION_FAILED", message)))
+    }
+
+    @ExceptionHandler(Exception::class)
+    fun handleException(e: Exception): ResponseEntity<ApiResponse<Unit>> {
+        log.error("Unhandled exception", e)
+        return ResponseEntity
+            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(ApiResponse.fail(ErrorResponse("INTERNAL_ERROR", "서버 오류가 발생했습니다")))
+    }
+}
