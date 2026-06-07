@@ -1,0 +1,16 @@
+.gradle/
+build/
+*.class
+*.jar
+!gradle-wrapper.jar
+
+# Local config
+src/main/resources/application-local.yml
+
+# IntelliJ
+.idea/
+*.iml
+out/
+
+# OS
+.DS_Store

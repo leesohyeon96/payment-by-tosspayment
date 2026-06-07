@@ -1,0 +1,26 @@
+spring:
+  profiles:
+    active: local
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    open-in-view: false
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+jwt:
+  secret: ${JWT_SECRET}
+  access-expiration: 1800000
+  refresh-expiration: 604800000
+
+toss:
+  secret-key: ${TOSS_SECRET_KEY}
+  base-url: https://api.tosspayments.com
+  webhook-secret: ${TOSS_WEBHOOK_SECRET}
+
+logging:
+  level:
+    com.shl.payment: DEBUG
