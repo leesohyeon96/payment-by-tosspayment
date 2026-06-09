@@ -4,6 +4,8 @@ import com.shl.payment.common.exception.BusinessException
 import com.shl.payment.order.application.dto.OrderResponse
 import com.shl.payment.order.domain.Order
 import com.shl.payment.order.domain.OrderRepository
+import com.shl.payment.payment.domain.Payment
+import com.shl.payment.payment.domain.PaymentRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
@@ -12,10 +14,12 @@ import java.util.UUID
 @Transactional
 class OrderService(
     private val orderRepository: OrderRepository,
+    private val paymentRepository: PaymentRepository,
 ) {
     fun createOrder(userId: UUID, orderName: String, totalAmount: Long): OrderResponse {
         val order = Order(userId = userId, totalAmount = totalAmount, orderName = orderName)
         orderRepository.save(order)
+        paymentRepository.save(Payment(orderId = order.id, amount = totalAmount))
         return OrderResponse.from(order)
     }
 

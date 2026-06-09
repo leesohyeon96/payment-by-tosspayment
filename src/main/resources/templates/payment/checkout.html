@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>결제</title>
@@ -16,7 +16,7 @@ const orderId = params.get('orderId');
 const amount = parseInt(params.get('amount'));
 const orderName = params.get('orderName');
 
-const tossPayments = TossPayments('YOUR_CLIENT_KEY_HERE');
+const tossPayments = TossPayments('[[${tossClientKey}]]');
 const payment = tossPayments.payment({ customerKey: 'ANONYMOUS_' + orderId });
 
 async function renderPaymentWidget() {

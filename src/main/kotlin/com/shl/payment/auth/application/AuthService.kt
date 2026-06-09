@@ -52,6 +52,13 @@ class AuthService(
         return issueTokens(refreshToken.userId)
     }
 
+    @Transactional(readOnly = true)
+    fun getEmail(userId: UUID): String {
+        return userRepository.findById(userId)
+            .orElseThrow { BusinessException("USER_NOT_FOUND", "존재하지 않는 사용자입니다") }
+            .email
+    }
+
     private fun issueTokens(userId: UUID): TokenResponse {
         val accessToken = jwtProvider.generateAccessToken(userId)
         val refreshTokenStr = jwtProvider.generateRefreshToken(userId)

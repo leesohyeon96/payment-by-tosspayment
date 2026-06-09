@@ -24,7 +24,7 @@ document.getElementById('signupForm').addEventListener('submit', async (e) => {
     if (data.success) {
         localStorage.setItem('accessToken', data.data.accessToken);
         localStorage.setItem('refreshToken', data.data.refreshToken);
-        window.location.href = '/order/create';
+        window.location.href = '/';
     } else {
         document.getElementById('message').textContent = data.error.message;
     }

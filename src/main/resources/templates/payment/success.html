@@ -4,8 +4,11 @@
 <body>
 <h2>결제 처리 중...</h2>
 <p id="message"></p>
-<a href="/order/create">새 주문</a> |
-<a href="/payment/history">결제 내역</a>
+<div id="actions" style="display:none;margin-top:16px">
+    <a href="/">홈으로</a> |
+    <a href="/payment/history">결제 내역</a> |
+    <a href="/order/create">새 주문</a>
+</div>
 <script>
 const params = new URLSearchParams(window.location.search);
 const paymentKey = params.get('paymentKey');
@@ -22,12 +25,12 @@ async function confirmPayment() {
     const data = await res.json();
     if (data.success) {
         document.querySelector('h2').textContent = '결제 완료!';
-        document.getElementById('message').textContent =
-            '결제 금액: ' + data.data.amount.toLocaleString() + '원';
+        document.getElementById('message').textContent = '결제 금액: ' + data.data.amount.toLocaleString() + '원';
     } else {
         document.querySelector('h2').textContent = '결제 실패';
         document.getElementById('message').textContent = data.error.message;
     }
+    document.getElementById('actions').style.display = 'block';
 }
 
 confirmPayment();

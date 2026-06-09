@@ -4,9 +4,47 @@
 <body>
 <h2>결제 내역</h2>
 <div id="payment-list">로딩 중...</div>
-<a href="/order/create">새 주문</a>
+<a href="/order/create">새 주문</a> | <a href="/">홈으로</a>
 <script>
-document.getElementById('payment-list').textContent = '준비 중';
+const token = localStorage.getItem('accessToken');
+if (!token) { window.location.href = '/login'; }
+
+const STATUS_LABEL = { READY: '준비중 (10분 후 자동 취소)', DONE: '결제완료', CANCELLED: '취소됨', FAILED: '실패/만료' };
+const STATUS_COLOR = { READY: '#888', DONE: 'green', CANCELLED: '#e66', FAILED: '#aaa' };
+
+async function cancelPayment(paymentId) {
+    if (!confirm('결제를 취소하시겠습니까?')) return;
+    const res = await fetch(`/payments/${paymentId}/cancel`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify({ cancelReason: '고객 요청 취소' })
+    });
+    const data = await res.json();
+    if (data.success) loadHistory();
+    else alert(data.error.message);
+}
+
+async function loadHistory() {
+    const res = await fetch('/payments', { headers: { 'Authorization': 'Bearer ' + token } });
+    const data = await res.json();
+    const list = document.getElementById('payment-list');
+    if (!data.success) { list.textContent = data.error.message; return; }
+    if (data.data.length === 0) { list.textContent = '결제 내역이 없습니다.'; return; }
+
+    list.innerHTML = data.data.map(p => `
+        <div style="border:1px solid #ccc;padding:12px;margin:8px 0">
+            <div>
+                <b>${p.amount.toLocaleString()}원</b>
+                <span style="color:${STATUS_COLOR[p.status]};margin-left:8px">${STATUS_LABEL[p.status] || p.status}</span>
+                ${p.status === 'DONE' ? `<button onclick="cancelPayment('${p.paymentId}')" style="margin-left:12px">취소</button>` : ''}
+            </div>
+            <div style="color:#666;font-size:0.9em">${p.requestedAt?.replace('T', ' ').slice(0, 16)}</div>
+            ${p.approvedAt ? `<div style="color:green;font-size:0.9em">승인: ${p.approvedAt.replace('T', ' ').slice(0, 16)}</div>` : ''}
+        </div>
+    `).join('');
+}
+
+loadHistory();
 </script>
 </body>
 </html>

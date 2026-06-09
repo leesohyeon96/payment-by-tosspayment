@@ -6,7 +6,9 @@ import com.shl.payment.auth.application.dto.SignupRequest
 import com.shl.payment.common.response.ApiResponse
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
+import java.util.UUID
 
 @RestController
 @RequestMapping("/auth")
@@ -29,5 +31,11 @@ class AuthController(
     fun refresh(@RequestHeader("Refresh-Token") refreshToken: String): ResponseEntity<ApiResponse<*>> {
         val tokens = authService.refresh(refreshToken)
         return ResponseEntity.ok(ApiResponse.ok(tokens))
+    }
+
+    @GetMapping("/me")
+    fun me(@AuthenticationPrincipal userId: String): ResponseEntity<ApiResponse<*>> {
+        val email = authService.getEmail(UUID.fromString(userId))
+        return ResponseEntity.ok(ApiResponse.ok(mapOf("email" to email)))
     }
 }

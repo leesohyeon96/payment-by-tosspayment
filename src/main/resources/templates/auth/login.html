@@ -10,6 +10,9 @@
 </form>
 <p id="message"></p>
 <script>
+if (localStorage.getItem('accessToken')) {
+    window.location.href = '/';
+}
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const res = await fetch('/auth/login', {
@@ -24,7 +27,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     if (data.success) {
         localStorage.setItem('accessToken', data.data.accessToken);
         localStorage.setItem('refreshToken', data.data.refreshToken);
-        window.location.href = '/order/create';
+        window.location.href = '/';
     } else {
         document.getElementById('message').textContent = data.error.message;
     }

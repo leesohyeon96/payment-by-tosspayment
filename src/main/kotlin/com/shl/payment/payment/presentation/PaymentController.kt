@@ -47,4 +47,12 @@ class PaymentController(
         val result = paymentService.getPayment(paymentId, UUID.fromString(userId))
         return ResponseEntity.ok(ApiResponse.ok(result))
     }
+
+    @GetMapping
+    fun getHistory(
+        @AuthenticationPrincipal userId: String,
+    ): ResponseEntity<ApiResponse<*>> {
+        val result = paymentService.getHistory(UUID.fromString(userId))
+        return ResponseEntity.ok(ApiResponse.ok(result))
+    }
 }

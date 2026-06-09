@@ -123,4 +123,13 @@ class PaymentService(
         if (order.userId != userId) throw BusinessException("ORDER_ACCESS_DENIED", "접근 권한 없음")
         return PaymentResponse.from(payment)
     }
+
+    @Transactional(readOnly = true)
+    fun getHistory(userId: UUID): List<PaymentResponse> {
+        val orderIds = orderRepository.findByUserId(userId).map { it.id }
+        if (orderIds.isEmpty()) return emptyList()
+        return paymentRepository.findByOrderIdIn(orderIds)
+            .sortedByDescending { it.requestedAt }
+            .map { PaymentResponse.from(it) }
+    }
 }

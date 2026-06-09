@@ -26,7 +26,7 @@ class SecurityConfig(
             .authorizeHttpRequests {
                 it
                     .requestMatchers("/auth/**", "/webhook/**").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/", "/payment/success", "/payment/fail").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/", "/signup", "/login", "/order/**", "/payment/**").permitAll()
                     .anyRequest().authenticated()
             }
             .addFilterBefore(

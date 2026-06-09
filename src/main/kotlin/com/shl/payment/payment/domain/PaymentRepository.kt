@@ -10,4 +10,5 @@ interface PaymentRepository {
     fun findByOrderId(orderId: UUID): Optional<Payment>
     fun findByPaymentKey(paymentKey: String): Optional<Payment>
     fun findByStatusAndRequestedAtBefore(status: PaymentStatus, before: LocalDateTime): List<Payment>
+    fun findByOrderIdIn(orderIds: List<UUID>): List<Payment>
 }

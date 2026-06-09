@@ -13,6 +13,7 @@ interface PaymentJpaRepository : JpaRepository<Payment, UUID> {
     fun findByOrderId(orderId: UUID): Optional<Payment>
     fun findByPaymentKey(paymentKey: String): Optional<Payment>
     fun findByStatusAndRequestedAtBefore(status: PaymentStatus, before: LocalDateTime): List<Payment>
+    fun findByOrderIdIn(orderIds: List<UUID>): List<Payment>
 }
 
 @Repository
@@ -25,4 +26,5 @@ class PaymentRepositoryImpl(
     override fun findByPaymentKey(paymentKey: String) = jpaRepository.findByPaymentKey(paymentKey)
     override fun findByStatusAndRequestedAtBefore(status: PaymentStatus, before: LocalDateTime) =
         jpaRepository.findByStatusAndRequestedAtBefore(status, before)
+    override fun findByOrderIdIn(orderIds: List<UUID>) = jpaRepository.findByOrderIdIn(orderIds)
 }

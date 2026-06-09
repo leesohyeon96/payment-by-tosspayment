@@ -6,11 +6,44 @@
 </head>
 <body>
 <h1>토스페이먼츠 결제 데모</h1>
-<nav>
-    <a href="/auth/signup">회원가입</a> |
-    <a href="/auth/login">로그인</a> |
-    <a href="/order/create">주문하기</a> |
-    <a href="/payment/history">결제 내역</a>
-</nav>
+<nav id="nav"></nav>
+<script>
+const token = localStorage.getItem('accessToken');
+const nav = document.getElementById('nav');
+
+function renderLoggedOut() {
+    nav.innerHTML = '<a href="/signup">회원가입</a> | <a href="/login">로그인</a>';
+}
+
+function renderLoggedIn() {
+    nav.innerHTML = '<a href="/order/create">주문하기</a> | <a href="/payment/history">결제 내역</a> | <a href="#" id="logout">로그아웃</a>';
+    document.getElementById('logout').addEventListener('click', (e) => {
+        e.preventDefault();
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        window.location.reload();
+    });
+}
+
+if (token) {
+    fetch('/auth/me', { headers: { 'Authorization': 'Bearer ' + token } })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) renderLoggedIn();
+            else {
+                localStorage.removeItem('accessToken');
+                localStorage.removeItem('refreshToken');
+                renderLoggedOut();
+            }
+        })
+        .catch(() => {
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+            renderLoggedOut();
+        });
+} else {
+    renderLoggedOut();
+}
+</script>
 </body>
 </html>
