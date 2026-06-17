@@ -30,6 +30,15 @@
 - 결제 내역 조회
 - 미완료 결제 자동 만료 처리 (스케줄러)
 
+
+## 기술적 고려사항
+
+- **멱등성(Idempotency)**: `paymentKey`에 DB unique 제약을 적용하여 중복 결제 승인 방지
+- **낙관적 락(Optimistic Locking)**: `Payment` 엔티티에 `@Version` 필드를 적용하여 동시 상태 변경 충돌 감지
+- **결제 상태 머신**: READY → DONE → CANCELLED, READY → FAILED 단방향 전이만 허용
+- **스케줄러**: 10분 이상 READY 상태인 결제를 5분 주기로 FAILED 처리 (미완료 결제 정리)
+- **Stale 토큰 처리**: 서버 재시작 후 만료된 JWT는 `/auth/me` 검증을 통해 클라이언트에서 자동 제거
+
 ## 로컬 실행
 
 ### 사전 준비
@@ -118,6 +127,15 @@ Experience the full payment flow: sign up, log in, create an order, pay, and can
 - Payment confirmation / cancellation
 - Payment history
 - Auto-expiry of incomplete payments (scheduler)
+
+
+## Technical Decisions
+
+- **Idempotency**: DB unique constraint on `paymentKey` prevents duplicate payment confirmations
+- **Optimistic Locking**: `@Version` field on `Payment` entity detects concurrent state-change conflicts
+- **Payment State Machine**: One-way transitions only — READY → DONE → CANCELLED, READY → FAILED
+- **Scheduler**: Marks READY payments older than 10 minutes as FAILED every 5 minutes
+- **Stale Token Handling**: Expired JWTs after server restart are auto-cleared via `/auth/me` validation
 
 ## Local Setup
 

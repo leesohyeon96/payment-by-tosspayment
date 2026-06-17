@@ -16,6 +16,10 @@ class Payment(
     @Id
     val id: UUID = UUID.randomUUID()
 
+    @Version
+    var version: Long = 0
+        private set
+
     @Column(nullable = false)
     val orderId: UUID = orderId
 
