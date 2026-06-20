@@ -8,6 +8,7 @@
 - DB 스키마 직접 변경 금지 — 엔티티 수정 후 JPA가 처리
 - `ddl-auto` 설정 변경 금지 (로컬: create-drop / 운영: update)
 - Security permitAll 무분별 확대 금지 — 페이지 GET만 허용, API는 인증 필수
+- 사용자 허락 없이 git commit / push / merge 금지
 - 새 예외 클래스 남발 금지 — `BusinessException` / `PaymentException` 사용
 
 ## 공통 컨벤션
