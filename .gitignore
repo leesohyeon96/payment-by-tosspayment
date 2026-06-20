@@ -5,7 +5,7 @@ build/
 !gradle-wrapper.jar
 
 # Local config
-src/main/resources/application-local.yml
+**/application-local.yml
 
 # IntelliJ
 .idea/
