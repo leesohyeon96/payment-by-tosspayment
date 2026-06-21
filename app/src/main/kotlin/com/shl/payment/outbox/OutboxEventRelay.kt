@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.shl.payment.common.event.OrderCreatedEvent
 import com.shl.payment.common.event.PaymentCancelledEvent
 import com.shl.payment.common.event.PaymentConfirmedEvent
+import com.shl.payment.common.event.PaymentCreationFailedEvent
+import com.shl.payment.common.event.PaymentFailedEvent
 import com.shl.payment.common.outbox.OutboxEventRepository
 import com.shl.payment.common.outbox.OutboxStatus
 import org.slf4j.LoggerFactory
@@ -45,6 +47,8 @@ class OutboxEventRelay(
         "ORDER_CREATED" -> objectMapper.readValue(payload, OrderCreatedEvent::class.java)
         "PAYMENT_CONFIRMED" -> objectMapper.readValue(payload, PaymentConfirmedEvent::class.java)
         "PAYMENT_CANCELLED" -> objectMapper.readValue(payload, PaymentCancelledEvent::class.java)
+        "PAYMENT_CREATION_FAILED" -> objectMapper.readValue(payload, PaymentCreationFailedEvent::class.java)
+        "PAYMENT_FAILED" -> objectMapper.readValue(payload, PaymentFailedEvent::class.java)
         else -> throw IllegalArgumentException("Unknown event type: $eventType")
     }
 }
