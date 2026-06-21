@@ -1,6 +1,8 @@
 package com.shl.payment.payment.application
 
+import com.shl.payment.common.event.PaymentConfirmedEvent
 import com.shl.payment.common.exception.PaymentException
+import com.shl.payment.common.outbox.OutboxEventStore
 import com.shl.payment.common.port.OrderInfo
 import com.shl.payment.common.port.OrderPort
 import com.shl.payment.payment.domain.Payment
@@ -21,7 +23,8 @@ class PaymentServiceTest {
     private val paymentRepository = mockk<PaymentRepository>()
     private val orderPort = mockk<OrderPort>()
     private val tossClient = mockk<TossPaymentClient>()
-    private val paymentService = PaymentService(paymentRepository, orderPort, tossClient, maxRetry = 1)
+    private val outboxEventStore = mockk<OutboxEventStore>()
+    private val paymentService = PaymentService(paymentRepository, orderPort, tossClient, outboxEventStore, maxRetry = 1)
 
     private val userId = UUID.randomUUID()
     private val orderId = UUID.randomUUID()
@@ -36,7 +39,7 @@ class PaymentServiceTest {
         every { orderPort.findById(orderId) } returns Optional.of(orderInfoOf())
         every { paymentRepository.findByOrderId(orderId) } returns Optional.of(payment)
         every { paymentRepository.save(any()) } answers { firstArg() }
-        justRun { orderPort.markPaid(orderId) }
+        justRun { outboxEventStore.store(any(), any()) }
         every { tossClient.confirm("pay_key", orderId.toString(), 10000L) } returns
             TossConfirmResponse("pay_key", orderId.toString(), "DONE", "카드", 10000L)
 
@@ -44,7 +47,7 @@ class PaymentServiceTest {
 
         assertEquals(PaymentStatus.DONE, result.status)
         verify { tossClient.confirm("pay_key", orderId.toString(), 10000L) }
-        verify { orderPort.markPaid(orderId) }
+        verify { outboxEventStore.store("PAYMENT_CONFIRMED", any<PaymentConfirmedEvent>()) }
     }
 
     @Test
