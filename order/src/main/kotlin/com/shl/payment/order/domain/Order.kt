@@ -13,6 +13,8 @@ class Order(
     userId: UUID,
     totalAmount: Long,
     orderName: String,
+    productId: UUID? = null,
+    quantity: Long = 1L,
 ) {
     @Id
     val id: UUID = UUID.randomUUID()
@@ -25,6 +27,12 @@ class Order(
 
     @Column(nullable = false)
     val orderName: String = orderName
+
+    @Column(nullable = true)
+    val productId: UUID? = productId
+
+    @Column(nullable = false)
+    val quantity: Long = quantity
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

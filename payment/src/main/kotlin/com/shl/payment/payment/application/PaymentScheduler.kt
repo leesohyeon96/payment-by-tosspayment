@@ -40,7 +40,7 @@ class PaymentScheduler(
                 val reason = "10분 초과 미완료"
                 payment.fail(reason)
                 paymentRepository.save(payment)
-                outboxEventStore.store("PAYMENT_FAILED", PaymentFailedEvent(payment.orderId, reason))
+                outboxEventStore.store("PAYMENT_FAILED", PaymentFailedEvent(orderId = payment.orderId, reason = reason))
                 log.info("미완료 결제 취소: id=${payment.id}")
             }.onFailure {
                 log.error("미완료 결제 취소 실패: id=${payment.id}", it)

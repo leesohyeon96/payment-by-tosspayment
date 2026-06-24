@@ -23,6 +23,8 @@ class OrderController(
             userId = UUID.fromString(userId),
             orderName = request.orderName,
             totalAmount = request.totalAmount,
+            productId = request.productId,
+            quantity = request.quantity,
         )
         return ResponseEntity.ok(ApiResponse.ok(result))
     }

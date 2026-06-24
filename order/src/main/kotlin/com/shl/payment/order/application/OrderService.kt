@@ -16,10 +16,10 @@ class OrderService(
     private val orderRepository: OrderRepository,
     private val outboxEventStore: OutboxEventStore,
 ) {
-    fun createOrder(userId: UUID, orderName: String, totalAmount: Long): OrderResponse {
-        val order = Order(userId = userId, totalAmount = totalAmount, orderName = orderName)
+    fun createOrder(userId: UUID, orderName: String, totalAmount: Long, productId: java.util.UUID? = null, quantity: Long = 1L): OrderResponse {
+        val order = Order(userId = userId, totalAmount = totalAmount, orderName = orderName, productId = productId, quantity = quantity)
         orderRepository.save(order)
-        outboxEventStore.store("ORDER_CREATED", OrderCreatedEvent(order.id, totalAmount))
+        outboxEventStore.store("ORDER_CREATED", OrderCreatedEvent(orderId = order.id, totalAmount = totalAmount, productId = productId, quantity = quantity))
         return OrderResponse.from(order)
     }
 
