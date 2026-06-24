@@ -1,8 +1,11 @@
 package com.shl.payment.order.application
 
+import com.shl.payment.common.domain.Money
 import com.shl.payment.common.event.OrderCreatedEvent
 import com.shl.payment.common.exception.BusinessException
 import com.shl.payment.common.outbox.OutboxEventStore
+import com.shl.payment.order.application.dto.CreateOrderRequest
+import com.shl.payment.order.application.dto.OrderItemRequest
 import com.shl.payment.order.domain.Order
 import com.shl.payment.order.domain.OrderRepository
 import io.mockk.every
@@ -22,12 +25,18 @@ class OrderServiceTest {
     private val orderService = OrderService(orderRepository, outboxEventStore)
     private val userId = UUID.randomUUID()
 
+    private fun createRequest(orderName: String = "테스트 상품", unitPrice: Long = 10000L, quantity: Long = 1L) =
+        CreateOrderRequest(
+            orderName = orderName,
+            items = listOf(OrderItemRequest(productId = UUID.randomUUID(), quantity = quantity, unitPrice = unitPrice)),
+        )
+
     @Test
     fun `주문 생성 - 정상`() {
         every { orderRepository.save(any()) } answers { firstArg() }
         justRun { outboxEventStore.store(any(), any()) }
 
-        val result = orderService.createOrder(userId, "테스트 상품", 10000L)
+        val result = orderService.createOrder(userId, createRequest())
 
         assertEquals("테스트 상품", result.orderName)
         assertEquals(10000L, result.totalAmount)
@@ -45,7 +54,7 @@ class OrderServiceTest {
 
     @Test
     fun `주문 조회 - 다른 사용자 주문이면 예외`() {
-        val order = Order(userId = UUID.randomUUID(), totalAmount = 10000L, orderName = "상품")
+        val order = Order(userId = UUID.randomUUID(), totalAmount = Money(10000L), orderName = "상품")
         every { orderRepository.findById(order.id) } returns Optional.of(order)
 
         assertThrows<BusinessException> {

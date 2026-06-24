@@ -1,10 +1,15 @@
 package com.shl.payment.order.application
 
+import com.shl.payment.common.domain.Money
+import com.shl.payment.common.domain.Quantity
 import com.shl.payment.common.event.OrderCreatedEvent
+import com.shl.payment.common.event.OrderItemDto
 import com.shl.payment.common.exception.BusinessException
 import com.shl.payment.common.outbox.OutboxEventStore
+import com.shl.payment.order.application.dto.CreateOrderRequest
 import com.shl.payment.order.application.dto.OrderResponse
 import com.shl.payment.order.domain.Order
+import com.shl.payment.order.domain.OrderItem
 import com.shl.payment.order.domain.OrderRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -16,10 +21,23 @@ class OrderService(
     private val orderRepository: OrderRepository,
     private val outboxEventStore: OutboxEventStore,
 ) {
-    fun createOrder(userId: UUID, orderName: String, totalAmount: Long, productId: java.util.UUID? = null, quantity: Long = 1L): OrderResponse {
-        val order = Order(userId = userId, totalAmount = totalAmount, orderName = orderName, productId = productId, quantity = quantity)
+    fun createOrder(userId: UUID, request: CreateOrderRequest): OrderResponse {
+        val totalAmount = Money(request.items.sumOf { it.unitPrice * it.quantity })
+        val order = Order(userId = userId, totalAmount = totalAmount, orderName = request.orderName)
+        request.items.forEach { item ->
+            order.addItem(OrderItem(
+                orderId = order.id,
+                productId = item.productId,
+                quantity = Quantity(item.quantity),
+                unitPrice = Money(item.unitPrice),
+            ))
+        }
         orderRepository.save(order)
-        outboxEventStore.store("ORDER_CREATED", OrderCreatedEvent(orderId = order.id, totalAmount = totalAmount, productId = productId, quantity = quantity))
+        outboxEventStore.store("ORDER_CREATED", OrderCreatedEvent(
+            orderId = order.id,
+            totalAmount = totalAmount.amount,
+            items = request.items.map { OrderItemDto(it.productId, it.quantity) },
+        ))
         return OrderResponse.from(order)
     }
 

@@ -22,8 +22,9 @@ class InventoryEventListener(
     fun onOrderCreated(event: OrderCreatedEvent) {
         val key = "${event.eventId}:inventory:reserve"
         if (processedEventRepository.existsById(key)) return
-        val productId = event.productId ?: return
-        stockService.reserve(event.orderId, productId, event.quantity)
+        event.items.forEach { item ->
+            stockService.reserve(event.orderId, item.productId, item.quantity)
+        }
         processedEventRepository.save(ProcessedEvent(key))
     }
 

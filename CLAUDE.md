@@ -29,6 +29,13 @@
 - 운영 URL: https://payment-by-tosspayments-production-6d2b.up.railway.app
 - 브랜치: `develop` → Railway 자동 배포
 
+## TODO.md 추적 규칙
+
+작업 이력을 `TODO.md`에 남긴다. 규칙:
+- 새 기능/개선 작업 시작 전 → Phase 항목에 `- [ ]` 태스크 추가
+- 구현 완료 후 → `- [ ]` → `- [x]` 로 변경, Phase 제목에 `✅` 표시
+- 커밋 전에 TODO 상태 반드시 업데이트
+
 ## 전체 로드맵
 
 → `TODO.md` 참고
