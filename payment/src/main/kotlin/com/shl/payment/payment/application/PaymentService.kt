@@ -1,10 +1,7 @@
 package com.shl.payment.payment.application
 
-import com.shl.payment.common.event.PaymentCancelledEvent
-import com.shl.payment.common.event.PaymentConfirmedEvent
 import com.shl.payment.common.exception.BusinessException
 import com.shl.payment.common.exception.PaymentException
-import com.shl.payment.common.outbox.OutboxEventStore
 import com.shl.payment.common.port.OrderPort
 import com.shl.payment.payment.application.dto.CancelPaymentRequest
 import com.shl.payment.payment.application.dto.PaymentResponse
@@ -24,7 +21,6 @@ class PaymentService(
     private val paymentRepository: PaymentRepository,
     private val orderPort: OrderPort,
     private val tossClient: TossPaymentClient,
-    private val outboxEventStore: OutboxEventStore,
     private val maxRetry: Int = 3,
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
@@ -38,7 +34,9 @@ class PaymentService(
         val payment = paymentRepository.findByOrderId(orderId)
             .orElseThrow { PaymentException.notFound() }
 
-        if (payment.status == PaymentStatus.DONE) return PaymentResponse.from(payment)
+        if (payment.status == PaymentStatus.DONE) {
+            return PaymentResponse.from(payment)
+        }
 
         if (payment.status != PaymentStatus.READY) {
             throw PaymentException.invalidStatus(payment.status.name)
@@ -66,7 +64,7 @@ class PaymentService(
                     .getOrDefault(PaymentMethod.CARD)
                 payment.confirm(paymentKey, method)
                 paymentRepository.save(payment)
-                outboxEventStore.store("PAYMENT_CONFIRMED", PaymentConfirmedEvent(orderId, paymentKey))
+                orderPort.markPaid(orderId)
                 return PaymentResponse.from(payment)
             } catch (e: PaymentException) {
                 throw e
@@ -107,12 +105,10 @@ class PaymentService(
         )
 
         payment.cancel(cancelAmount)
-        paymentRepository.save(payment)
-
         if (payment.status == PaymentStatus.CANCELLED) {
-            outboxEventStore.store("PAYMENT_CANCELLED", PaymentCancelledEvent(payment.orderId))
+            orderPort.markCancelled(payment.orderId)
         }
-
+        paymentRepository.save(payment)
         return PaymentResponse.from(payment)
     }
 

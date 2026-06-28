@@ -1,8 +1,7 @@
 package com.shl.payment.order.application
 
-import com.shl.payment.common.event.OrderCreatedEvent
 import com.shl.payment.common.exception.BusinessException
-import com.shl.payment.common.outbox.OutboxEventStore
+import com.shl.payment.common.port.PaymentCreationPort
 import com.shl.payment.order.application.dto.OrderResponse
 import com.shl.payment.order.domain.Order
 import com.shl.payment.order.domain.OrderRepository
@@ -14,12 +13,12 @@ import java.util.UUID
 @Transactional
 class OrderService(
     private val orderRepository: OrderRepository,
-    private val outboxEventStore: OutboxEventStore,
+    private val paymentCreationPort: PaymentCreationPort,
 ) {
     fun createOrder(userId: UUID, orderName: String, totalAmount: Long): OrderResponse {
         val order = Order(userId = userId, totalAmount = totalAmount, orderName = orderName)
         orderRepository.save(order)
-        outboxEventStore.store("ORDER_CREATED", OrderCreatedEvent(order.id, totalAmount))
+        paymentCreationPort.createPayment(order.id, totalAmount)
         return OrderResponse.from(order)
     }
 
