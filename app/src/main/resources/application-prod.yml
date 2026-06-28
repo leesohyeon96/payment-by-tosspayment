@@ -2,6 +2,11 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    hikari:
+      connection-timeout: 10000
+      initialization-fail-timeout: 10000
 
 server:
   port: 8080
@@ -9,3 +14,4 @@ server:
 logging:
   level:
     com.shl.payment: INFO
+    com.zaxxer.hikari: DEBUG
