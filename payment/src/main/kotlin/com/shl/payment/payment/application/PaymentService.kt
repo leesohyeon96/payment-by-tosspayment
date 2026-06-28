@@ -66,7 +66,7 @@ class PaymentService(
                     .getOrDefault(PaymentMethod.CARD)
                 payment.confirm(paymentKey, method)
                 paymentRepository.save(payment)
-                outboxEventStore.store("PAYMENT_CONFIRMED", PaymentConfirmedEvent(orderId = orderId, paymentKey = paymentKey))
+                outboxEventStore.store("PAYMENT_CONFIRMED", PaymentConfirmedEvent(orderId, paymentKey))
                 return PaymentResponse.from(payment)
             } catch (e: PaymentException) {
                 throw e
@@ -110,7 +110,7 @@ class PaymentService(
         paymentRepository.save(payment)
 
         if (payment.status == PaymentStatus.CANCELLED) {
-            outboxEventStore.store("PAYMENT_CANCELLED", PaymentCancelledEvent(orderId = payment.orderId))
+            outboxEventStore.store("PAYMENT_CANCELLED", PaymentCancelledEvent(payment.orderId))
         }
 
         return PaymentResponse.from(payment)

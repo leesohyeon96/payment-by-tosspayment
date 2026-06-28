@@ -1,9 +1,9 @@
 package com.shl.payment.order.application.dto
 
 import jakarta.validation.constraints.NotBlank
-import jakarta.validation.constraints.NotEmpty
+import jakarta.validation.constraints.Positive
 
 data class CreateOrderRequest(
     @field:NotBlank val orderName: String,
-    @field:NotEmpty val items: List<OrderItemRequest>,
+    @field:Positive val totalAmount: Long,
 )

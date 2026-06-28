@@ -21,7 +21,8 @@ class OrderController(
     ): ResponseEntity<ApiResponse<*>> {
         val result = orderService.createOrder(
             userId = UUID.fromString(userId),
-            request = request,
+            orderName = request.orderName,
+            totalAmount = request.totalAmount,
         )
         return ResponseEntity.ok(ApiResponse.ok(result))
     }
