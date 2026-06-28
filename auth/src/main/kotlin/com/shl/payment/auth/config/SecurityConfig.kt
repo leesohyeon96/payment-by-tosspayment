@@ -25,7 +25,7 @@ class SecurityConfig(
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests {
                 it
-                    .requestMatchers("/auth/**", "/webhook/**").permitAll()
+                    .requestMatchers("/auth/**", "/webhook/**", "/actuator/health").permitAll()
                     .requestMatchers(HttpMethod.GET, "/", "/signup", "/login", "/order/**", "/payment/**").permitAll()
                     .anyRequest().authenticated()
             }

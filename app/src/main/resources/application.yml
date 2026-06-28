@@ -25,3 +25,12 @@ toss:
 logging:
   level:
     com.shl.payment: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  health:
+    db:
+      enabled: true
