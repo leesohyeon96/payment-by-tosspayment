@@ -1,5 +1,7 @@
 package com.shl.payment.payment.application
 
+import com.shl.payment.common.event.PaymentFailedEvent
+import com.shl.payment.common.outbox.OutboxEventStore
 import com.shl.payment.payment.domain.PaymentRepository
 import com.shl.payment.payment.domain.PaymentStatus
 import com.shl.payment.payment.infrastructure.TossPaymentClient
@@ -13,6 +15,7 @@ import java.time.LocalDateTime
 class PaymentScheduler(
     private val paymentRepository: PaymentRepository,
     private val tossClient: TossPaymentClient,
+    private val outboxEventStore: OutboxEventStore,
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -34,8 +37,10 @@ class PaymentScheduler(
                 payment.paymentKey?.let { key ->
                     tossClient.cancel(key, "시간 초과로 인한 자동 취소")
                 }
-                payment.fail("10분 초과 미완료")
+                val reason = "10분 초과 미완료"
+                payment.fail(reason)
                 paymentRepository.save(payment)
+                outboxEventStore.store("PAYMENT_FAILED", PaymentFailedEvent(orderId = payment.orderId, reason = reason))
                 log.info("미완료 결제 취소: id=${payment.id}")
             }.onFailure {
                 log.error("미완료 결제 취소 실패: id=${payment.id}", it)

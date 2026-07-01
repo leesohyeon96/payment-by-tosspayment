@@ -8,6 +8,7 @@
 - DB 스키마 직접 변경 금지 — 엔티티 수정 후 JPA가 처리
 - `ddl-auto` 설정 변경 금지 (로컬: create-drop / 운영: update)
 - Security permitAll 무분별 확대 금지 — 페이지 GET만 허용, API는 인증 필수
+- 사용자 허락 없이 git commit / push / merge 금지
 - 새 예외 클래스 남발 금지 — `BusinessException` / `PaymentException` 사용
 
 ## 공통 컨벤션
@@ -27,6 +28,13 @@
 - 운영: Railway + Neon PostgreSQL
 - 운영 URL: https://payment-by-tosspayments-production-6d2b.up.railway.app
 - 브랜치: `develop` → Railway 자동 배포
+
+## TODO.md 추적 규칙
+
+작업 이력을 `TODO.md`에 남긴다. 규칙:
+- 새 기능/개선 작업 시작 전 → Phase 항목에 `- [ ]` 태스크 추가
+- 구현 완료 후 → `- [ ]` → `- [x]` 로 변경, Phase 제목에 `✅` 표시
+- 커밋 전에 TODO 상태 반드시 업데이트
 
 ## 전체 로드맵
 
