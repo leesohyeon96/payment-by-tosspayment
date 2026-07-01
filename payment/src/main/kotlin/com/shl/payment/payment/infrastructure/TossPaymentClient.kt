@@ -43,6 +43,20 @@ class TossPaymentClient(
         }
     }
 
+    fun getPayment(paymentKey: String): TossConfirmResponse {
+        return try {
+            webClient.get()
+                .uri("$baseUrl/v1/payments/$paymentKey")
+                .header(HttpHeaders.AUTHORIZATION, authHeader())
+                .retrieve()
+                .bodyToMono(TossConfirmResponse::class.java)
+                .block()!!
+        } catch (e: WebClientResponseException) {
+            log.error("Toss getPayment failed: paymentKey=$paymentKey, body=${e.responseBodyAsString}")
+            throw PaymentException.tossFailed(e.responseBodyAsString)
+        }
+    }
+
     fun cancel(paymentKey: String, cancelReason: String, cancelAmount: Long? = null): TossCancelResponse {
         return try {
             webClient.post()
