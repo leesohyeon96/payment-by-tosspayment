@@ -16,4 +16,3 @@ jwt:
 toss:
   secret-key: test_sk_dummy
   base-url: http://localhost
-  webhook-secret: test_webhook_secret

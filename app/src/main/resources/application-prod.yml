@@ -5,13 +5,14 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   datasource:
     hikari:
+      maximum-pool-size: 5
+      minimum-idle: 1
       connection-timeout: 10000
       initialization-fail-timeout: 10000
 
 server:
-  port: 8080
+  port: ${PORT:8080}
 
 logging:
   level:
     com.shl.payment: INFO
-    com.zaxxer.hikari: DEBUG

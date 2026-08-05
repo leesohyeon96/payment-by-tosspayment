@@ -20,7 +20,6 @@ toss:
   secret-key: ${TOSS_SECRET_KEY}
   base-url: https://api.tosspayments.com
   client-key: ${TOSS_CLIENT_KEY}
-  webhook-secret: ${TOSS_WEBHOOK_SECRET}
 
 logging:
   level:

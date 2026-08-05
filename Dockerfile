@@ -13,5 +13,6 @@ RUN gradle :app:bootJar --no-daemon
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 COPY --from=build /app/app/build/libs/*.jar app.jar
+ENV JAVA_OPTS="-Xmx320m -Xms128m -XX:MaxMetaspaceSize=128m -XX:+UseSerialGC -XX:TieredStopAtLevel=1"
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["sh", "-c", "exec java $JAVA_OPTS -jar app.jar"]

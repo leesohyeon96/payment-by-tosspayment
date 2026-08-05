@@ -19,15 +19,16 @@
 - **트랜잭션**: 서비스 계층에 `@Transactional` 적용
 - **URL**: 페이지(Thymeleaf) = 단수형 `/order/**`, API(REST) = 복수형 `/orders/**`
 
-## 환경변수 (Railway 운영)
+## 환경변수 (운영)
 
-`DB_URL`, `DB_USERNAME`, `DB_PASSWORD`, `JWT_SECRET`, `TOSS_SECRET_KEY`, `TOSS_CLIENT_KEY`, `TOSS_WEBHOOK_SECRET`
+`SPRING_PROFILES_ACTIVE=prod`, `DB_URL`, `DB_USERNAME`, `DB_PASSWORD`, `JWT_SECRET`, `TOSS_SECRET_KEY`, `TOSS_CLIENT_KEY`
 
 ## 배포
 
-- 운영: Railway + Neon PostgreSQL
-- 운영 URL: https://payment-by-tosspayments-production-6d2b.up.railway.app
-- 브랜치: `develop` → Railway 자동 배포
+- 운영: Koyeb (Docker) + Supabase PostgreSQL (Session Pooler)
+- 인스턴스: 512MB / 0.1 vCPU — JVM 옵션은 `Dockerfile`의 `JAVA_OPTS` 참고
+- 유휴 1시간 후 슬립 → UptimeRobot으로 `/actuator/health` 30분 간격 핑
+- 브랜치: `develop` → 자동 배포
 
 ## TODO.md 추적 규칙
 
