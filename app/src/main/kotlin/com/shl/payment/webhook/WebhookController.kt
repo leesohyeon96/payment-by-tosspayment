@@ -46,7 +46,10 @@ class WebhookController(
                     "휴대폰" -> PaymentMethod.MOBILE_PHONE
                     "문화상품권", "도서문화상품권", "게임문화상품권" -> PaymentMethod.GIFT_CERTIFICATE
                     "간편결제" -> PaymentMethod.EASY_PAY
-                    else -> PaymentMethod.CARD
+                    else -> {
+                        log.warn("알 수 없는 결제수단: ${confirmed.method}, orderId=${confirmed.orderId}")
+                        PaymentMethod.CARD
+                    }
                 }
                 payment.confirm(confirmed.paymentKey, method)
                 paymentRepository.save(payment)
