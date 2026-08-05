@@ -3,7 +3,8 @@
 토스페이먼츠 API를 연동한 결제 시스템 데모 프로젝트입니다.  
 회원가입/로그인부터 주문 생성, 재고 예약, 결제, 취소까지 전체 결제 플로우를 구현했습니다.
 
-**[→ 데모 사이트](https://payment-by-tosspayments-production-6d2b.up.railway.app)**
+**[→ 데모 사이트](https://TODO.onrender.com)**  
+<sub>무료 인스턴스라 첫 접속 시 기동에 30초~1분 걸릴 수 있습니다.</sub>
 
 ---
 
@@ -15,9 +16,9 @@
 | Framework | Spring Boot 3.3 |
 | ORM | Spring Data JPA (Hibernate) |
 | Security | Spring Security + JWT |
-| DB (운영) | PostgreSQL (Neon) |
+| DB (운영) | PostgreSQL (Supabase) |
 | DB (로컬) | PostgreSQL (Docker) |
-| 배포 | Railway |
+| 배포 | Render (Docker) |
 | 결제 | 토스페이먼츠 API |
 | View | Thymeleaf + Vanilla JS |
 
@@ -167,7 +168,8 @@ toss:
 A payment system demo integrating the Toss Payments API.  
 Covers the full payment flow: sign up, create an order, reserve stock, pay, and cancel.
 
-**[→ Live Demo](https://payment-by-tosspayments-production-6d2b.up.railway.app)**
+**[→ Live Demo](https://TODO.onrender.com)**  
+<sub>Hosted on a free instance — the first request may take 30–60s to wake the server.</sub>
 
 ---
 
@@ -179,9 +181,9 @@ Covers the full payment flow: sign up, create an order, reserve stock, pay, and 
 | Framework | Spring Boot 3.3 |
 | ORM | Spring Data JPA (Hibernate) |
 | Security | Spring Security + JWT |
-| DB (Production) | PostgreSQL (Neon) |
+| DB (Production) | PostgreSQL (Supabase) |
 | DB (Local) | PostgreSQL (Docker) |
-| Deployment | Railway |
+| Deployment | Render (Docker) |
 | Payment | Toss Payments API |
 | View | Thymeleaf + Vanilla JS |
 

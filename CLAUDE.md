@@ -25,9 +25,11 @@
 
 ## 배포
 
-- 운영: Koyeb (Docker) + Supabase PostgreSQL (Session Pooler)
-- 인스턴스: 512MB / 0.1 vCPU — JVM 옵션은 `Dockerfile`의 `JAVA_OPTS` 참고
-- 유휴 1시간 후 슬립 → UptimeRobot으로 `/actuator/health` 30분 간격 핑
+- 운영: Render (Docker, Free) + Supabase PostgreSQL (Session Pooler)
+- 배포 설정: `render.yaml` / 빌드는 `Dockerfile`
+- 인스턴스: 512MB — JVM 옵션은 `Dockerfile`의 `JAVA_OPTS` 참고
+- 유휴 15분 후 슬립 → UptimeRobot으로 `/actuator/health` 10분 간격 핑
+- 무료 시간 750h/월은 **workspace 단위** — 여행 프로젝트와 별도 workspace로 분리
 - 브랜치: `develop` → 자동 배포
 
 ## TODO.md 추적 규칙

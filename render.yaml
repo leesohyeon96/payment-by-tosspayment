@@ -3,6 +3,8 @@ services:
     name: payment-by-tosspayments
     runtime: docker
     dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /actuator/health
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: prod
@@ -13,8 +15,8 @@ services:
       - key: DB_PASSWORD
         sync: false
       - key: JWT_SECRET
-        generateValue: true
+        sync: false
       - key: TOSS_SECRET_KEY
         sync: false
-      - key: TOSS_WEBHOOK_SECRET
+      - key: TOSS_CLIENT_KEY
         sync: false
