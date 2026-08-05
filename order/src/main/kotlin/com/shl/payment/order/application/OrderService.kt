@@ -26,7 +26,6 @@ class OrderService(
         val order = Order(userId = userId, totalAmount = totalAmount, orderName = request.orderName)
         request.items.forEach { item ->
             order.addItem(OrderItem(
-                orderId = order.id,
                 productId = item.productId,
                 quantity = Quantity(item.quantity),
                 unitPrice = Money(item.unitPrice),

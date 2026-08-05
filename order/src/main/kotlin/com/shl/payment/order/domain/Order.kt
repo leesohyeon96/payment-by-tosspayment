@@ -29,8 +29,7 @@ class Order(
     @Column(nullable = false)
     val orderName: String = orderName
 
-    @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
+    @OneToMany(mappedBy = "order", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
     val items: MutableList<OrderItem> = mutableListOf()
 
     @Enumerated(EnumType.STRING)
@@ -45,6 +44,7 @@ class Order(
 
     fun addItem(item: OrderItem) {
         items.add(item)
+        item.assignTo(this)
     }
 
     fun markPaid() {

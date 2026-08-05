@@ -8,6 +8,7 @@ import com.shl.payment.common.event.PaymentFailedEvent
 import com.shl.payment.common.outbox.ProcessedEvent
 import com.shl.payment.common.outbox.ProcessedEventRepository
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.event.TransactionPhase
 import org.springframework.transaction.event.TransactionalEventListener
@@ -18,7 +19,7 @@ class InventoryEventListener(
     private val processedEventRepository: ProcessedEventRepository,
 ) {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun onOrderCreated(event: OrderCreatedEvent) {
         val key = "${event.eventId}:inventory:reserve"
         if (processedEventRepository.existsById(key)) return
@@ -29,7 +30,7 @@ class InventoryEventListener(
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun onPaymentConfirmed(event: PaymentConfirmedEvent) {
         val key = "${event.eventId}:inventory:confirm"
         if (processedEventRepository.existsById(key)) return
@@ -38,7 +39,7 @@ class InventoryEventListener(
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun onPaymentCancelled(event: PaymentCancelledEvent) {
         val key = "${event.eventId}:inventory:cancel"
         if (processedEventRepository.existsById(key)) return
@@ -47,7 +48,7 @@ class InventoryEventListener(
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun onPaymentCreationFailed(event: PaymentCreationFailedEvent) {
         val key = "${event.eventId}:inventory:cancel"
         if (processedEventRepository.existsById(key)) return
@@ -56,7 +57,7 @@ class InventoryEventListener(
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun onPaymentFailed(event: PaymentFailedEvent) {
         val key = "${event.eventId}:inventory:cancel"
         if (processedEventRepository.existsById(key)) return

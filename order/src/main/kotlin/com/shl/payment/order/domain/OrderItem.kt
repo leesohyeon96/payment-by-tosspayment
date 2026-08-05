@@ -10,7 +10,6 @@ import java.util.UUID
 @Entity
 @Table(name = "order_items")
 class OrderItem(
-    orderId: UUID,
     productId: UUID,
     quantity: Quantity,
     unitPrice: Money,
@@ -18,8 +17,10 @@ class OrderItem(
     @Id
     val id: UUID = UUID.randomUUID()
 
-    @Column(nullable = false)
-    val orderId: UUID = orderId
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "order_id", nullable = false)
+    lateinit var order: Order
+        private set
 
     @Column(nullable = false)
     val productId: UUID = productId
@@ -33,4 +34,8 @@ class OrderItem(
     val unitPrice: Money = unitPrice
 
     val subtotal: Money get() = unitPrice * quantity.value
+
+    internal fun assignTo(order: Order) {
+        this.order = order
+    }
 }

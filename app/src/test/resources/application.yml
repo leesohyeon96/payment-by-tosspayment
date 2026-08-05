@@ -16,3 +16,4 @@ jwt:
 toss:
   secret-key: test_sk_dummy
   base-url: http://localhost
+  client-key: test_ck_dummy

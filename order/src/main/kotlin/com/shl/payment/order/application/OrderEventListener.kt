@@ -9,7 +9,6 @@ import com.shl.payment.common.outbox.ProcessedEventRepository
 import com.shl.payment.order.domain.OrderRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.event.TransactionPhase
 import org.springframework.transaction.event.TransactionalEventListener
 
@@ -21,7 +20,6 @@ class OrderEventListener(
     private val log = LoggerFactory.getLogger(javaClass)
 
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
-    @Transactional
     fun onPaymentConfirmed(event: PaymentConfirmedEvent) {
         val key = "${event.eventId}:order:paid"
         if (processedEventRepository.existsById(key)) return
@@ -33,7 +31,6 @@ class OrderEventListener(
     }
 
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
-    @Transactional
     fun onPaymentCancelled(event: PaymentCancelledEvent) {
         val key = "${event.eventId}:order:cancel"
         if (processedEventRepository.existsById(key)) return
@@ -45,7 +42,6 @@ class OrderEventListener(
     }
 
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
-    @Transactional
     fun onPaymentCreationFailed(event: PaymentCreationFailedEvent) {
         val key = "${event.eventId}:order:cancel"
         if (processedEventRepository.existsById(key)) return
@@ -58,7 +54,6 @@ class OrderEventListener(
     }
 
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
-    @Transactional
     fun onPaymentFailed(event: PaymentFailedEvent) {
         val key = "${event.eventId}:order:cancel"
         if (processedEventRepository.existsById(key)) return
